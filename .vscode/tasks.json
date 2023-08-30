@@ -1,0 +1,65 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "compile",
+            "type": "shell",
+            "command": "zokrates compile -i ./src/sqrt.zok",
+            "group": {
+                "kind": "build",
+            }
+        },
+        {
+            "label": "setup",
+            "type": "shell",
+            "command": "zokrates setup",
+            "dependsOn": "compile",
+        },
+        {
+            "label": "compute-witness",
+            "type": "shell",
+            "options": {
+                "env": {
+                    "ROOT": "337",
+                    "SQUARE": "113569",
+                }
+            },
+            "command": "zokrates compute-witness -a ${ROOT} ${SQUARE}",
+            "dependsOn": "setup",
+            "group": {
+                "kind": "build",
+            }
+        },
+        {
+            "label": "generate-proof",
+            "type": "shell",
+            "command": "zokrates generate-proof",
+            "dependsOn": "compute-witness",
+            "group": {
+                "kind": "build",
+            }
+        },
+        {
+            "label": "export-verifier",
+            "type": "shell",
+            "command": "zokrates export-verifier",
+            "dependsOn": "generate-proof",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "verify",
+            "type": "shell",
+            "command": "zokrates verify",
+            "dependsOn": "export-verifier",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            }
+        }
+    ]
+}

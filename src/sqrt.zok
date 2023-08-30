@@ -1,0 +1,5 @@
+// proof of knowledge that the prover knows the square root of a given number
+def main(private field a, field b) {
+    assert(a * a == b);
+    return;
+}
