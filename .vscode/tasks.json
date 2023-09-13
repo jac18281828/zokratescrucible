@@ -22,11 +22,12 @@
             "type": "shell",
             "options": {
                 "env": {
-                    "ROOT": "337",
-                    "SQUARE": "113569",
+                    "ROOT": "119249944",
+                    "CONGRUANCE": "216358144",
+                    "MOD": "315167717"
                 }
             },
-            "command": "zokrates compute-witness -a ${ROOT} ${SQUARE}",
+            "command": "zokrates compute-witness -a ${ROOT} ${SQUARE} ${MOD}",
             "dependsOn": "setup",
             "group": {
                 "kind": "build",
