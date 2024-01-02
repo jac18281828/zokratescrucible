@@ -6,7 +6,7 @@ Works in both arm64 and amd64!
 
 ## Overview
 
-A development playground provides a safe and isolated environment where software developers can experiment, test, and iterate on ZoKrates zkSNARKS. They can generate code, Solidity components, or an entire proof. This is a space separate from a production environment where developers can try out new ideas, troubleshoot issues, and learn without affecting the actual users or systems.
+A development playground provides a safe and isolated environment where software developers can experiment, test, and iterate on ZoKrates zkSNARKS. They can generate code or an entire proof. This is a space separate from a production environment where developers can try out new ideas, troubleshoot issues, and learn without affecting the actual users or systems.
 
 Key features of Zokrates Crucible development playground:
 
