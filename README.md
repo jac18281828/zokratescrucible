@@ -1,5 +1,7 @@
 # ZoKrates Test Environment and Crucible
 
+[![CI](https://github.com/jac18281828/zokratescrucible/actions/workflows/ci-image.yml/badge.svg)](https://github.com/jac18281828/zokratescrucible/actions/workflows/ci-image.yml)
+
 #### Architecture
 
 Works in both arm64 and amd64!

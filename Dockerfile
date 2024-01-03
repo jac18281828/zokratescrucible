@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain none -y \
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain stable -y \
     && curl -sL https://deb.nodesource.com/setup_18.x | bash - && apt-get install -y nodejs && npm i -g solc \
     && curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh \
     && rustup --version; cargo --version; rustc --version; wasm-pack --version; echo nodejs $(node -v);
@@ -35,6 +35,7 @@ RUN mkdir -p /build/ZoKrates && tar -zxf ${VERSION}.tar.gz -C /build
 WORKDIR /build/ZoKrates-${VERSION}
 
 RUN ./build_release.sh
+RUN cargo test --release -- --nocapture
 
 FROM debian:stable-slim
 
@@ -57,10 +58,14 @@ ENV ZOKRATES_HOME=/home/zokrates/.zokrates
 USER zokrates
 WORKDIR /home/zokrates
 
-ARG VERSION=0.8.7
+# RUST
+COPY --chown=zokrates:zokrates --from=builder /home/zokrates/.cargo /home/zokrates/.cargo
+
+ARG VERSION=0.8.8
 COPY --from=builder --chown=zokrates:zokrates /build/ZoKrates-${VERSION}/target/release/zokrates $ZOKRATES_HOME/bin/
-COPY --from=builder --chown=zokrates:zokrates /build/ZoKrates-${VERSION}/zokrates_cli/examples $ZOKRATES_HOME/examples
 COPY --from=builder --chown=zokrates:zokrates /build/ZoKrates-${VERSION}/zokrates_stdlib/stdlib $ZOKRATES_HOME/stdlib
+COPY --from=builder --chown=zokrates:zokrates /build/ZoKrates-${VERSION}/zokrates_cli/examples $ZOKRATES_HOME/examples
+
 
 ENV PATH "$ZOKRATES_HOME/bin:$PATH"
 ENV ZOKRATES_STDLIB "$ZOKRATES_HOME/stdlib"
@@ -69,4 +74,4 @@ WORKDIR /workspaces/zokratescrucible
 
 COPY --chown=zokrates:zokrates . .
 
-RUN ~/cargo test --release -- --nocapture
+ENV PATH=/home/zocrates/.cargo/bin:$PATH
