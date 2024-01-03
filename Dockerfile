@@ -69,4 +69,4 @@ WORKDIR /workspaces/zokratescrucible
 
 COPY --chown=zokrates:zokrates . .
 
-#RUN ~/cargo test --release -- --nocapture
+RUN ~/cargo test --release -- --nocapture
