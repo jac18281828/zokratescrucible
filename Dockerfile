@@ -29,7 +29,7 @@ FROM zokratesenv as builder
 
 WORKDIR /build
 
-ARG VERSION=0.8.7
+ARG VERSION=0.8.8
 ADD https://github.com/Zokrates/ZoKrates/archive/refs/tags/${VERSION}.tar.gz .
 RUN mkdir -p /build/ZoKrates && tar -zxf ${VERSION}.tar.gz -C /build
 WORKDIR /build/ZoKrates-${VERSION}
