@@ -11,12 +11,8 @@ ENV RUSTUP_HOME=/usr/local/rustup \
 # Install prerequisites
 RUN apt-get update && apt-get install -y --no-install-recommends \
         ca-certificates \
-        git \
-        curl \
-        build-essential \
-        pkg-config \
-        python3 \
-        apt-transport-https && \
+        git curl build-essential pkg-config \
+        python3 apt-transport-https && \
     apt clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -53,25 +49,28 @@ RUN useradd -u 1000 --create-home -s /bin/bash -m zokrates
 RUN usermod -a -G sudo zokrates
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-ENV ZOKRATES_HOME=/home/zokrates/.zokrates
+# RUST
+COPY --from=builder /usr/local/cargo /usr/local/cargo
+COPY --from=builder /usr/local/rustup /usr/local/rustup
 
 USER zokrates
 WORKDIR /home/zokrates
-
-# RUST
-COPY --chown=zokrates:zokrates --from=builder /home/zokrates/.cargo /home/zokrates/.cargo
 
 ARG VERSION=0.8.8
 COPY --from=builder --chown=zokrates:zokrates /build/ZoKrates-${VERSION}/target/release/zokrates $ZOKRATES_HOME/bin/
 COPY --from=builder --chown=zokrates:zokrates /build/ZoKrates-${VERSION}/zokrates_stdlib/stdlib $ZOKRATES_HOME/stdlib
 COPY --from=builder --chown=zokrates:zokrates /build/ZoKrates-${VERSION}/zokrates_cli/examples $ZOKRATES_HOME/examples
 
+ENV RUSTUP_HOME=/usr/local/rustup \
+    CARGO_HOME=/usr/local/cargo \
+    ZOKRATES_HOME=/home/zokrates/.zokrates \    
+    PATH=/usr/local/cargo/bin:/usr/local/rustup/bin:$PATH 
 
-ENV PATH "$ZOKRATES_HOME/bin:$PATH"
-ENV ZOKRATES_STDLIB "$ZOKRATES_HOME/stdlib"
+ENV PATH="$ZOKRATES_HOME/bin:$PATH"
+ENV ZOKRATES_STDLIB="$ZOKRATES_HOME/stdlib"
 
 WORKDIR /workspaces/zokratescrucible
 
 COPY --chown=zokrates:zokrates . .
 
-ENV PATH=/home/zocrates/.cargo/bin:$PATH
+ENV PATH=/usr/local/cargo/bin:$PATH
